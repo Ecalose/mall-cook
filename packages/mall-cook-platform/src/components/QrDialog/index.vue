@@ -1,37 +1,30 @@
-<!--
- * @Description: What's this for
- * @Autor: WangYuan
- * @Date: 2022-02-07 09:18:48
- * @LastEditors: WangYuan
- * @LastEditTime: 2022-04-13 17:33:39
--->
 <template>
   <el-dialog title="二维码预览" :visible.sync="show" width="30%">
     <ul class="flex row-around pt20">
       <li>
         <div class="flex-column row-center mb20">
           <img class="w200 h200 mb20" :src="getQr()" />
-          <span class="lb-1 f-h5-grey">请扫码预览H5商城</span>
+          <span class="lb-1 f-h5-grey">扫码预览 H5 商城</span>
         </div>
       </li>
       <li>
         <div class="flex-column row-center">
           <img class="w200 h200 mb20" :src="WXCode" />
-          <span class="lb-1 f-h5-grey">请扫码预览小程序商城</span>
+          <span class="lb-1 f-h5-grey">扫码预览小程序商城</span>
         </div>
       </li>
     </ul>
     <div class="mt40">
-      <el-input placeholder="请输入内容" v-model="url">
-        <template slot="append"
-          ><el-button
+      <el-input placeholder="请输入链接" v-model="url">
+        <template slot="append">
+          <el-button
             type="primary"
             icon="el-icon-link"
             @click="link"
-          ></el-button
-        ></template>
+          ></el-button>
+        </template>
       </el-input>
-      <h3 class="mt5 mb10 f12 f-h5-grey">H5商城链接，可跳转直接在浏览器查看</h3>
+      <h3 class="mt5 mb10 f12 f-h5-grey">H5 链接可直接在浏览器中打开预览</h3>
     </div>
   </el-dialog>
 </template>
@@ -40,6 +33,7 @@
 import { mapGetters } from "vuex";
 import { createWXcode } from "@/api/project";
 import global from "@/config/global";
+import { debugLog } from "@/utils/debug";
 
 export default {
   data() {
@@ -61,17 +55,18 @@ export default {
     },
 
     getQr() {
+      if (!this.project?.id) return "";
       this.url = `${global.viewUrl}pages/index/tabbar/home?id=${this.project.id}`;
 
       let options = {
-        padding: 10, // 二维码四边空白（默认为10px）
-        width: 160, // 二维码图片宽度（默认为256px）
-        height: 160, // 二维码图片高度（默认为256px）
-        reverse: false, // 反色二维码，二维码颜色为上层容器的背景颜色
-        background: "#ffffff", // 二维码背景颜色（默认白色）
-        foreground: "#000000", // 二维码颜色（默认黑色）
+        padding: 10,
+        width: 160,
+        height: 160,
+        reverse: false,
+        background: "#ffffff",
+        foreground: "#000000",
       };
-      console.log("预览地址:" + this.url);
+      debugLog("preview url:", this.url);
       return jrQrcode.getQrBase64(this.url, options);
     },
 

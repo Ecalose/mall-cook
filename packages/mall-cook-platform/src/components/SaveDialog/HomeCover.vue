@@ -1,10 +1,3 @@
-<!--
- * @Description: 首页封面
- * @Autor: WangYuan
- * @Date: 2021-09-27 17:45:38
- * @LastEditors: WangYuan
- * @LastEditTime: 2022-02-11 10:26:53
--->
 <template>
   <el-dialog
     :visible.sync="show"
@@ -34,6 +27,7 @@ import RealTimeView from "@/components/TopBar/RealTimeView";
 import { uploadCover } from "@/api/project";
 import global from "@/config/global";
 import { mapGetters } from "vuex";
+import { debugLog } from "@/utils/debug";
 
 export default {
   name: "HomeCover",
@@ -59,28 +53,19 @@ export default {
       return `${global.viewUrl}pages/build/build?operate=build`;
     },
 
-    // 首页配置数据
     home() {
-      return this.project.pages.find((page) => page.home);
+      return this.project?.pages?.find((page) => page.home) || null;
     },
   },
 
   methods: {
-    /**
-     * 初始化
-     * 1. 初始化iframe页面
-     * 2. 等待2s，通知iframe调用方法生成封面base64
-     *
-     */
     async init() {
       await this.open();
-
       this.createCover();
     },
 
-    // 打开弹窗，并延迟2s进行后续操作（2s用于渲染，uni-app图片渲染较慢）
     open() {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         this.show = true;
         setTimeout(() => {
           resolve();
@@ -88,8 +73,8 @@ export default {
       });
     },
 
-    // 发送物料列表用于渲染
     setWidgetsMessage() {
+      if (!this.$refs.iframe?.contentWindow || !this.home) return;
       this.$refs.iframe.contentWindow.postMessage(
         {
           even: "list",
@@ -99,8 +84,8 @@ export default {
       );
     },
 
-    // 发送信息，通知iframe调用方法生成封面base64
     createCover() {
+      if (!this.$refs.iframe?.contentWindow) return;
       this.$refs.iframe.contentWindow.postMessage(
         {
           even: "cover",
@@ -109,18 +94,16 @@ export default {
       );
     },
 
-    // 监听iframe，生成封面base64后会通知回调
     getMessage() {
       let self = this;
       window.addEventListener("message", function (e) {
-        let { type, params } = e.data;
-        if (type == "getCoverBase64") {
+        let { type, params } = e.data || {};
+        if (type === "getCoverBase64") {
           self.upload(params.base64);
         }
       });
     },
 
-    // 上传封面
     upload(base64) {
       return new Promise((resolve, reject) => {
         let coverFile = this.getFile(base64);
@@ -128,11 +111,11 @@ export default {
         formData.append("domainId", 3);
         formData.append("dir", "img");
         formData.append("file", coverFile);
-        // 图片上传服务器
+
         uploadCover(formData)
           .then((res) => {
-            if ((res.errorCode = "00000")) {
-              console.log("图片上传服务器成功");
+            if (res.errorCode === "00000") {
+              debugLog("cover upload success", res);
               this.$emit("complete", {
                 status: 1,
                 data: res.data,
@@ -143,7 +126,6 @@ export default {
       });
     },
 
-    // base64整合文件
     getFile(dataurl, filename = "file") {
       let arr = dataurl.split(",");
       let mime = arr[0].match(/:(.*?);/)[1];

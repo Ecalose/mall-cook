@@ -1,5 +1,5 @@
 /*
- * @Description: 项目数据管理
+ * @Description: 椤圭洰鏁版嵁绠＄悊
  * @Autor: WangYuan
  * @Date: 2021-05-21 17:32:57
  * @LastEditors: WangYuan
@@ -7,15 +7,16 @@
  */
 import { fixedPages } from '@/config/project'
 import { getProject, settingProject, removeProject } from '@/utils/auth'
+import { debugLog } from '@/utils/debug'
 
 export default {
     state: {
         project: getProject(),
-        fixedPages,             // 静态页面集合
-        curPage: null,          // 当前页面
-        curComponent: null,     // 当前物料
-        dragComponent: null,    // 拖拽物料
-        dragStatus: false,      // 拖拽入页面状态
+        fixedPages,             // 闈欐€侀〉闈㈤泦鍚?
+        curPage: null,          // 褰撳墠椤甸潰
+        curComponent: null,     // 褰撳墠鐗╂枡
+        dragComponent: null,    // 鎷栨嫿鐗╂枡
+        dragStatus: false,      // 鎷栨嫿鍏ラ〉闈㈢姸鎬?
     },
     getters: {
         project: state => state.project,
@@ -27,14 +28,14 @@ export default {
     },
     mutations: {
 
-        // 初始化重置项目
+        // 鍒濆鍖栭噸缃」鐩?
         setProject(state, project) {
             state.project = project
             settingProject(state.project)
-            state.curPage = state.project.pages.find(page => page.home)
+            state.curPage = state.project?.pages?.find(page => page.home) || state.project?.pages?.[0] || null
         },
 
-        // 删除项目
+        // 鍒犻櫎椤圭洰
         dropProject(state) {
             state.project = {}
             state.curPage = {}
@@ -44,39 +45,36 @@ export default {
             removeProject()
         },
 
-        // 设置首页为当前页
+        // 璁剧疆棣栭〉涓哄綋鍓嶉〉
         setHomePage(state, page) {
-            state.curPage = state.project.pages.find(page => page.home)
+            state.curPage = state.project?.pages?.find(item => item.home) || page || null
         },
 
-        // 设置当前页面
+        // 璁剧疆褰撳墠椤甸潰
         setCurPage(state, page) {
-            console.log('设置当前页面');
-            console.log(JSON.stringify(page));
-            
-            
+            debugLog('璁剧疆褰撳墠椤甸潰', page)
             state.curPage = page
         },
 
-        // 当前操作操作物料
+        // 褰撳墠鎿嶄綔鎿嶄綔鐗╂枡
         setcurComponent(state, component) {
             state.curComponent = component
         },
 
-        // 当前拖拽物料
+        // 褰撳墠鎷栨嫿鐗╂枡
         setDragComponent(state, component) {
             state.dragComponent = component
         },
 
-        // 添加物料
+        // 娣诲姞鐗╂枡
         addComponentList(state, component) {
             state.curPage.componentList.push(component)
         },
 
-        // 删除物料
+        // 鍒犻櫎鐗╂枡
         delComponent(state, id) {
 
-            // 查找物料对应下标
+            // 鏌ユ壘鐗╂枡瀵瑰簲涓嬫爣
             let index = state.curPage.componentList.reduce((pre, cur, i) => {
                 if (cur.id == id)
                     pre = i
@@ -84,6 +82,7 @@ export default {
                 return pre
             }, -1)
 
+            if (index < 0) return
             state.curPage.componentList.splice(index, 1)
             state.curComponent = null
         },

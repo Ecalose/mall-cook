@@ -5,11 +5,22 @@
  * @LastEditors: WangYuan
  * @LastEditTime: 2021-12-15 17:17:02
  */
-import store from '@/store'
-
 const TokenKey = 'token'
 const UserInfoKey = 'user-info'
 const ProjectKey = 'mall-project'
+
+function parseStorageItem(value) {
+    if (!value) {
+        return null
+    }
+
+    try {
+        return JSON.parse(value)
+    } catch (error) {
+        console.warn('瀛樺偍鏁版嵁瑙ｆ瀽澶辫触', error)
+        return null
+    }
+}
 
 export function getAuthToken() {
     return sessionStorage.getItem(TokenKey)
@@ -29,7 +40,7 @@ export function setAuthUserInfo(userInfo) {
 
 export function getAuthUserInfo() {
     let userInfoStr = sessionStorage.getItem(UserInfoKey)
-    return userInfoStr ? JSON.parse(sessionStorage.getItem(UserInfoKey)) : null
+    return parseStorageItem(userInfoStr)
 }
 
 export function removeAuthUserInfo() {
@@ -38,7 +49,7 @@ export function removeAuthUserInfo() {
 
 export function getProject() {
     let str = localStorage.getItem(ProjectKey)
-    return str ? JSON.parse(str) : null
+    return parseStorageItem(str)
 }
 
 export function settingProject(project) {

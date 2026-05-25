@@ -85,7 +85,7 @@ export default {
      */
     async create() {
       let map = new Map();
-      mallTypeList.map((item) => map.set(item.type, item.logo));
+      mallTypeList.forEach((item) => map.set(item.type, item.logo));
 
       let project = {
         ...this.$cloneDeep(rojectModel),

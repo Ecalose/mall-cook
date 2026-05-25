@@ -1,19 +1,10 @@
-<!--
- * @Description: What's this for
- * @Autor: WangYuan
- * @Date: 2021-09-24 09:11:38
- * @LastEditors: WangYuan
- * @LastEditTime: 2022-02-14 14:16:44
--->
 <template>
   <config-wrap :title="label">
     <div class="mb10 f-grey f12">{{ mOptions.note }}</div>
     <div class="nav">
       <draggable v-model="mValue">
-        <!-- 编译模式,插槽可供自定义拖拽组件入容器 -->
         <slot v-if="edit"></slot>
 
-        <!-- 非编译模式，根据schema子类遍历数组单项组件 -->
         <template v-else>
           <div v-for="item in mValue" :key="item.id" class="nav-item">
             <component
@@ -37,6 +28,7 @@
 <script>
 import schemaMixin from "@/mixin/schemaMixin";
 import typeToComponent from "@/config/schema-template";
+import { debugLog } from "@/utils/debug";
 
 export default {
   name: "SchemaArray",
@@ -66,8 +58,7 @@ export default {
 
   methods: {
     addItem() {
-      console.log("...");
-      console.log(this.mValue);
+      debugLog("schema array value", this.mValue);
       if (this.mValue.length >= this.mOptions?.limit) {
         this.$notify({
           title: "无法新增",
@@ -84,6 +75,7 @@ export default {
 
     delItem(id) {
       let i = this.mValue.findIndex((item) => item.id == id);
+      if (i < 0) return;
       this.mValue.splice(i, 1);
     },
   },

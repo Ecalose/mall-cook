@@ -120,7 +120,7 @@ export default {
       if (typeof res.data?.data === 'string') {
         return res.data.data
       } else {
-        Promise.reject(res)
+        return Promise.reject(res)
       }
     })
   },

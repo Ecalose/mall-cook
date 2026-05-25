@@ -115,15 +115,15 @@ const router = new VueRouter({
 
 // 全局路由守卫鉴权
 router.beforeEach((to, from, next) => {
-  if (to.name == 'login') {
-    next()
-  } else {
-    if (!store.getters.token) {
-      next('/')
-    } else {
-      next()
-    }
+  if (to.name === 'login') {
+    return next()
   }
+
+  if (!store.getters.token) {
+    return next('/')
+  }
+
+  next()
 })
 
 export default router

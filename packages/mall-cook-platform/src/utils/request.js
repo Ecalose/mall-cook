@@ -19,6 +19,8 @@ const request = axios.create({
 
 // request interceptor
 request.interceptors.request.use(config => {
+  config.headers = config.headers || {}
+
   if (store.getters.token) {
     config.headers['Authorization'] = store.getters.token
   }

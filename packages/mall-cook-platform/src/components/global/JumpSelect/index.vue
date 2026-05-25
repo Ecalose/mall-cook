@@ -1,35 +1,27 @@
-<!--
- * @Description: 页面跳转选择组件
- * @Autor: WangYuan
- * @Date: 2021-08-12 11:06:37
- * @LastEditors: WangYuan
- * @LastEditTime: 2021-09-01 20:03:27
--->
-
 <template>
   <div class="flex col-center h25">
-    <!-- <div class="mr15">链接</div> -->
     <template>
       <div
         v-if="!mValue.id"
         class="f12 f-theme pointer"
         @click="open"
       >
-        选择跳转到的页面
+        选择跳转页面
       </div>
 
       <template v-else>
-        <el-tag size='small'>{{pageName}}</el-tag>
+        <el-tag size="small">{{ pageName }}</el-tag>
         <span class="ml5 f12 f-theme pointer" @click="open">修改</span>
       </template>
     </template>
 
-    <JumpDialog ref='jump'></JumpDialog>
+    <JumpDialog ref="jump"></JumpDialog>
   </div>
 </template>
 
 <script>
-import { mapMutations, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
+import { debugLog } from "@/utils/debug";
 
 export default {
   name: "JumpSelect",
@@ -49,41 +41,36 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["project","fixedPages"]),
+    ...mapGetters(["project", "fixedPages"]),
     pageName() {
       let page = null;
       switch (this.mValue.type) {
         case "fixed":
-          page = this.fixedPages.find(
-            (page) => page.id == this.mValue.id
-          );
+          page = this.fixedPages.find((page) => page.id == this.mValue.id);
           break;
         case "custom":
           page = this.project.pages.find((page) => page.id == this.mValue.id);
           break;
         case "link":
-          page = { name: "外链h5" };
+          page = { name: "外链 H5" };
           break;
         default:
           break;
       }
-      return page.name;
+      return page?.name || "";
     },
   },
   watch: {
     value: {
       immediate: true,
-      handler(newValue, oldValue) {
+      handler(newValue) {
         this.mValue = newValue;
-        console.log('mValue');
-        console.log(this.mValue);
-        
-        
+        debugLog("jump value", this.mValue);
       },
     },
     mValue: {
       immediate: true,
-      handler(newValue, oldValue) {
+      handler(newValue) {
         this.$emit("input", newValue);
       },
     },
@@ -91,10 +78,6 @@ export default {
   methods: {
     open() {
       this.$refs.jump.open();
-    },
-
-    getName() {
-      console.log("触发getName");
     },
   },
 };

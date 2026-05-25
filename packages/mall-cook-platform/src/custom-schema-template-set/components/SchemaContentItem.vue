@@ -35,6 +35,7 @@
 
 <script>
 import SchemaContentShape from './SchemaContentShape'
+import { debugLog } from '@/utils/debug'
 
 export default {
   name: 'SchemaContentItem',
@@ -70,7 +71,7 @@ export default {
     },
     list: {
       handler (val) {
-        console.log('....change list')
+        debugLog('....change list')
         this.$emit('update:componentList', val)
       },
       immediate: true,

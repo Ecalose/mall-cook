@@ -13,12 +13,13 @@
 </template>
 
 <script>
+import { debugLog } from "@/utils/debug";
+
 export default {
   name: "GitControl",
   methods: {
     toGit() {
-      console.log("toGit");
-
+      debugLog("toGit");
       window.open("https://github.com/wangyuan389/mall-cook", "_blank");
     },
   },

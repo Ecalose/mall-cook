@@ -26,6 +26,7 @@
 
 <script>
 import PageConfig from "@/components/PageConfig";
+import { debugLog } from "@/utils/debug";
 export default {
   components: {
     PageConfig
@@ -35,10 +36,7 @@ export default {
 
   computed: {
     curSchema() {
-      console.log('curSchema');
-      console.log(this.control.curWidget);
-      
-      
+      debugLog("curSchema", this.control.curWidget);
       return this.$fields[this.control.curWidget.component];
     },
   },

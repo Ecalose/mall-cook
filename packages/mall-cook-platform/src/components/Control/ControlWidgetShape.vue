@@ -52,6 +52,7 @@ export default {
       let index = this.control.curPage.componentList.findIndex(
         (item) => item.id == id
       );
+      if (index < 0) return;
       this.control.curPage.componentList.splice(index, 1);
       this.control.curWidget = undefined;
     },

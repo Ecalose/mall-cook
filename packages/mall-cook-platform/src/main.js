@@ -20,6 +20,7 @@ import {
   getComponentStyle,
   getMultiBackground
 } from '@/utils/style'
+import debugLog from '@/utils/debug'
 
 // request
 import request from '@/utils/request'
@@ -91,6 +92,7 @@ import globalConfigForFaRichText from '@/faim/RichText/globalConfig'
 Vue.use(FaRichText, globalConfigForFaRichText)
 
 Vue.prototype.$jump = jump
+Vue.prototype.$debug = debugLog
 Vue.prototype.$getWrapStyle = getWrapStyle
 Vue.prototype.$getComponentStyle = getComponentStyle
 Vue.prototype.$getMultiBackground = getMultiBackground
